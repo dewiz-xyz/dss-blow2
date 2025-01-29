@@ -1,0 +1,60 @@
+/**
+ *Submitted for verification at Etherscan.io on 2021-11-10
+*/
+
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2021 Dai Foundation
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+pragma solidity ^0.8.26;
+
+interface ERC20Like {
+    function balanceOf(address) external returns (uint256);
+    function approve(address usr, uint wad) external returns (bool);
+}
+
+interface JoinLike {
+    function dai() external view returns (address);
+    function join(address, uint256) external;
+}
+
+contract DssBlow2 {
+    address   public immutable vow;
+    ERC20Like public immutable dai;
+    ERC20Like public immutable usds;
+    JoinLike  public immutable daiJoin;
+    JoinLike  public immutable usdsJoin;
+
+    event Blow(uint256 DaiAmount, uint256 UsdsAmount);
+
+    constructor(address daiJoin_, address usdsJoin_, address vow_) {
+        daiJoin = JoinLike(daiJoin_);
+        dai = ERC20Like(daiJoin.dai());
+        usdsJoin = JoinLike(usdsJoin_);
+        usds = ERC20Like(usdsJoin.dai());
+        vow = vow_;
+        dai.approve(daiJoin_, type(uint256).max);
+        usds.approve(usdsJoin_, type(uint256).max);
+    }
+
+    function blow() public {
+        uint256 daiBalance = dai.balanceOf(address(this));
+        daiJoin.join(vow, daiBalance);
+        uint256 usdsBalance = usds.balanceOf(address(this));
+        usdsJoin.join(vow, usdsBalance);
+        emit Blow(daiBalance, usdsBalance);
+    }
+
+}
