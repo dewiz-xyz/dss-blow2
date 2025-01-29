@@ -1,7 +1,3 @@
-/**
- *Submitted for verification at Etherscan.io on 2021-11-10
-*/
-
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2021 Dai Foundation
 //
@@ -23,13 +19,11 @@ pragma solidity ^0.8.26;
 import "dss-test/DssTest.sol";
 import "./DssBlow2.sol";
 
-
 contract DssBlow2Test is DssTest {
-
-    address constant CHAINLOG   = 0xdA0Ab1e0017DEbCd72Be8599041a2aa3bA7e740F;
+    address constant CHAINLOG = 0xdA0Ab1e0017DEbCd72Be8599041a2aa3bA7e740F;
 
     DssInstance public dss;
-    DssBlow2    public dssBlow2;
+    DssBlow2 public dssBlow2;
 
     address usds;
     address usdsJoin;
@@ -40,30 +34,30 @@ contract DssBlow2Test is DssTest {
     function setUp() public {
         vm.createSelectFork("mainnet");
         // get all the relevant addresses
-        dss      = MCD.loadFromChainlog(CHAINLOG);
-        usds     = dss.chainlog.getAddress("USDS");
+        dss = MCD.loadFromChainlog(CHAINLOG);
+        usds = dss.chainlog.getAddress("USDS");
         usdsJoin = dss.chainlog.getAddress("USDS_JOIN");
-        vow      = address(dss.vow);
+        vow = address(dss.vow);
 
         dssBlow2 = new DssBlow2(address(dss.daiJoin), usdsJoin, vow);
 
-        vm.label(address(dss.dai),     "Dai");
+        vm.label(address(dss.dai), "Dai");
         vm.label(address(dss.daiJoin), "DaiJoin");
-        vm.label(            usds,     "Usds");
-        vm.label(            usdsJoin, "UsdsJoin");
-        vm.label(address(dss.vow),     "Vow");
+        vm.label(usds, "Usds");
+        vm.label(usdsJoin, "UsdsJoin");
+        vm.label(address(dss.vow), "Vow");
     }
 
     function test_vow() public {
         // send dai and usds to DssBlow2
-        uint256 daiAmount  = 10 ether;
-        uint256 usdsAmount =  5 ether;
+        uint256 daiAmount = 10 ether;
+        uint256 usdsAmount = 5 ether;
         deal(address(dss.dai), address(dssBlow2), daiAmount);
         deal(usds, address(dssBlow2), usdsAmount);
         // store balances before blow()
-        uint256  vowDaiBalance   = dss.vat.dai(vow);
-        uint256  blowDaiBalance  = dss.dai.balanceOf(address(dssBlow2));
-        uint256  blowUsdsBalance = ERC20Like(usds).balanceOf(address(dssBlow2));
+        uint256 vowDaiBalance = dss.vat.dai(vow);
+        uint256 blowDaiBalance = dss.dai.balanceOf(address(dssBlow2));
+        uint256 blowUsdsBalance = ERC20Like(usds).balanceOf(address(dssBlow2));
         assertEq(blowUsdsBalance, usdsAmount);
         assertEq(blowDaiBalance, daiAmount);
         // event emission
@@ -72,7 +66,7 @@ contract DssBlow2Test is DssTest {
         // call blow()
         dssBlow2.blow();
         // check balance after blow()
-        blowDaiBalance  = dss.dai.balanceOf(vow);
+        blowDaiBalance = dss.dai.balanceOf(vow);
         blowUsdsBalance = ERC20Like(usds).balanceOf(vow);
         assertEq(blowDaiBalance, 0);
         assertEq(blowUsdsBalance, 0);

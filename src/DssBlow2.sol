@@ -1,7 +1,3 @@
-/**
- *Submitted for verification at Etherscan.io on 2021-11-10
-*/
-
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2021 Dai Foundation
 //
@@ -22,7 +18,7 @@ pragma solidity ^0.8.26;
 
 interface ERC20Like {
     function balanceOf(address) external returns (uint256);
-    function approve(address usr, uint wad) external returns (bool);
+    function approve(address usr, uint256 wad) external returns (bool);
 }
 
 interface JoinLike {
@@ -31,11 +27,11 @@ interface JoinLike {
 }
 
 contract DssBlow2 {
-    address   public immutable vow;
+    address public immutable vow;
     ERC20Like public immutable dai;
     ERC20Like public immutable usds;
-    JoinLike  public immutable daiJoin;
-    JoinLike  public immutable usdsJoin;
+    JoinLike public immutable daiJoin;
+    JoinLike public immutable usdsJoin;
 
     event Blow(uint256 DaiAmount, uint256 UsdsAmount);
 
@@ -56,5 +52,4 @@ contract DssBlow2 {
         usdsJoin.join(vow, usdsBalance);
         emit Blow(daiBalance, usdsBalance);
     }
-
 }
