@@ -7,6 +7,8 @@ on:
 
 env:
   FOUNDRY_PROFILE: ci
+  ETH_RPC_URL: ${{ secrets.ETH_RPC_URL }}
+
 
 jobs:
   check:
@@ -41,5 +43,5 @@ jobs:
 
       - name: Run Forge tests
         run: |
-          forge test -vvv --via-ir
+          forge test -vvv
         id: test
