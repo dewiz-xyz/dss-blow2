@@ -27,7 +27,6 @@ contract DssBlow2DeployScript is Script {
     using ScriptTools for string;
 
     string constant NAME = "dss-blow-2-deploy";
-    string config;
 
     address constant CHAINLOG = 0xdA0Ab1e0017DEbCd72Be8599041a2aa3bA7e740F;
     DssInstance dss = MCD.loadFromChainlog(CHAINLOG);
@@ -35,7 +34,6 @@ contract DssBlow2DeployScript is Script {
     DssBlow2Instance inst;
 
     function run() external {
-        config = ScriptTools.loadConfig();
 
         vm.startBroadcast();
 
