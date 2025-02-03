@@ -34,15 +34,10 @@ contract DssBlow2DeployScript is Script {
     DssBlow2Instance inst;
 
     function run() external {
-
         vm.startBroadcast();
 
         inst = DssBlow2Deploy.deploy(
-            DssBlow2DeployParams({
-                daiJoin: address(dss.daiJoin),
-                usdsJoin: usdsJoin,
-                vow: address(dss.vow)
-            })
+            DssBlow2DeployParams({daiJoin: address(dss.daiJoin), usdsJoin: usdsJoin, vow: address(dss.vow)})
         );
 
         vm.stopBroadcast();
@@ -53,4 +48,3 @@ contract DssBlow2DeployScript is Script {
         ScriptTools.exportContract(NAME, "vow", address(dss.vow));
     }
 }
-

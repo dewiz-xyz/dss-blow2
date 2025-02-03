@@ -26,10 +26,6 @@ struct DssBlow2DeployParams {
 
 library DssBlow2Deploy {
     function deploy(DssBlow2DeployParams memory p) internal returns (DssBlow2Instance memory r) {
-        r.blow = address(new DssBlow2({
-            daiJoin_: p.daiJoin,
-            usdsJoin_: p.usdsJoin,
-            vow_: p.vow
-        }));
+        r.blow = address(new DssBlow2({daiJoin_: p.daiJoin, usdsJoin_: p.usdsJoin, vow_: p.vow}));
     }
 }

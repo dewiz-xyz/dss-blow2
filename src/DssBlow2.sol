@@ -48,8 +48,8 @@ contract DssBlow2 {
     function blow() public {
         uint256 daiBalance = dai.balanceOf(address(this));
         if (daiBalance > 0) {
-           daiJoin.join(vow, daiBalance);
-           emit Blow(address(dai), daiBalance);
+            daiJoin.join(vow, daiBalance);
+            emit Blow(address(dai), daiBalance);
         }
         uint256 usdsBalance = usds.balanceOf(address(this));
         if (usdsBalance > 0) {

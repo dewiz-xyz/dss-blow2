@@ -18,4 +18,3 @@ pragma solidity 0.8.26;
 struct DssBlow2Instance {
     address blow;
 }
-
