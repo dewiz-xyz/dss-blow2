@@ -28,7 +28,7 @@ contract DssBlow2Test is DssTest {
     address usdsJoin;
     address vow;
 
-    event Blow(uint256 DaiAmount, uint256 UsdsAmount);
+    event Blow(address indexed token, uint256 amount);
 
     function setUp() public {
         vm.createSelectFork("mainnet");
@@ -47,7 +47,7 @@ contract DssBlow2Test is DssTest {
         vm.label(address(dss.vow), "Vow");
     }
 
-    function test_vow() public {
+    function test_blow() public {
         // send dai and usds to DssBlow2
         uint256 daiAmount = 10 ether;
         uint256 usdsAmount = 5 ether;
@@ -57,19 +57,67 @@ contract DssBlow2Test is DssTest {
         uint256 vowDaiBalance = dss.vat.dai(vow);
         uint256 blowDaiBalance = dss.dai.balanceOf(address(dssBlow2));
         uint256 blowUsdsBalance = ERC20Like(usds).balanceOf(address(dssBlow2));
-        assertEq(blowUsdsBalance, usdsAmount);
         assertEq(blowDaiBalance, daiAmount);
+        assertEq(blowUsdsBalance, usdsAmount);
         // event emission
-        vm.expectEmit(false, false, false, true);
-        emit Blow(daiAmount, usdsAmount);
+        vm.expectEmit(true, false, false, true);
+        emit Blow(address(dss.dai), daiAmount);
+        vm.expectEmit(true, false, false, true);
+        emit Blow(usds, usdsAmount);
         // call blow()
         dssBlow2.blow();
-        // check balance after blow()
+        // check balances after blow()
+        blowDaiBalance = dss.dai.balanceOf(address(dssBlow2));
+        blowUsdsBalance = ERC20Like(usds).balanceOf(address(dssBlow2));
+        assertEq(blowDaiBalance, 0);
+        assertEq(blowUsdsBalance, 0);
+        // the vat dai balance is in rad so we multiply with ray
+        assertEq(dss.vat.dai(vow), vowDaiBalance + (daiAmount + usdsAmount) * RAY, "blowDaiUsds: vow balance mismatch");
+    }
+
+    function test_blowDai() public {
+        // send only dai to DssBlow2
+        uint256 daiAmount = 10 ether;
+        deal(address(dss.dai), address(dssBlow2), daiAmount);
+        // store balances before blow()
+        uint256 vowDaiBalance = dss.vat.dai(vow);
+        uint256 blowDaiBalance = dss.dai.balanceOf(address(dssBlow2));
+        uint256 blowUsdsBalance = ERC20Like(usds).balanceOf(address(dssBlow2));
+        assertEq(blowDaiBalance, daiAmount);
+        // event emission
+        vm.expectEmit(true, false, false, true);
+        emit Blow(address(dss.dai), daiAmount);
+        // call blow()
+        dssBlow2.blow();
+        // check balances after blow()
         blowDaiBalance = dss.dai.balanceOf(vow);
         blowUsdsBalance = ERC20Like(usds).balanceOf(vow);
         assertEq(blowDaiBalance, 0);
         assertEq(blowUsdsBalance, 0);
         // the vat dai balance is in rad so we multiply with ray
-        assertEq(dss.vat.dai(vow), vowDaiBalance + (daiAmount + usdsAmount) * RAY);
+        assertEq(dss.vat.dai(vow), vowDaiBalance + daiAmount * RAY, "blowDai: vow balance mismatch");
+    }
+
+    function test_blowUsds() public {
+        // send only usds to DssBlow2
+        uint256 usdsAmount = 5 ether;
+        deal(usds, address(dssBlow2), usdsAmount);
+        // store balances before blow()
+        uint256 vowDaiBalance = dss.vat.dai(vow);
+        uint256 blowDaiBalance = dss.dai.balanceOf(address(dssBlow2));
+        uint256 blowUsdsBalance = ERC20Like(usds).balanceOf(address(dssBlow2));
+        assertEq(blowUsdsBalance, usdsAmount);
+        // event emission
+        vm.expectEmit(true, false, false, true);
+        emit Blow(usds, usdsAmount);
+        // call blow()
+        dssBlow2.blow();
+        // check balances after blow()
+        blowDaiBalance = dss.dai.balanceOf(address(dssBlow2));
+        blowUsdsBalance = ERC20Like(usds).balanceOf(address(dssBlow2));
+        assertEq(blowDaiBalance, 0);
+        assertEq(blowUsdsBalance, 0);
+        // the vat dai balance is in rad so we multiply with ray
+        assertEq(dss.vat.dai(vow), vowDaiBalance + usdsAmount * RAY, "blowUsds: vow balance mismatch");
     }
 }

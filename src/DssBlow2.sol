@@ -22,6 +22,7 @@ interface ERC20Like {
 
 interface JoinLike {
     function dai() external view returns (address);
+    function usds() external view returns (address);
     function join(address, uint256) external;
 }
 
@@ -32,13 +33,13 @@ contract DssBlow2 {
     JoinLike public immutable daiJoin;
     JoinLike public immutable usdsJoin;
 
-    event Blow(uint256 DaiAmount, uint256 UsdsAmount);
+    event Blow(address indexed token, uint256 amount);
 
     constructor(address daiJoin_, address usdsJoin_, address vow_) {
         daiJoin = JoinLike(daiJoin_);
         dai = ERC20Like(daiJoin.dai());
         usdsJoin = JoinLike(usdsJoin_);
-        usds = ERC20Like(usdsJoin.dai());
+        usds = ERC20Like(usdsJoin.usds());
         vow = vow_;
         dai.approve(daiJoin_, type(uint256).max);
         usds.approve(usdsJoin_, type(uint256).max);
@@ -46,9 +47,14 @@ contract DssBlow2 {
 
     function blow() public {
         uint256 daiBalance = dai.balanceOf(address(this));
-        daiJoin.join(vow, daiBalance);
+        if (daiBalance > 0) {
+           daiJoin.join(vow, daiBalance);
+           emit Blow(address(dai), daiBalance);
+        }
         uint256 usdsBalance = usds.balanceOf(address(this));
-        usdsJoin.join(vow, usdsBalance);
-        emit Blow(daiBalance, usdsBalance);
+        if (usdsBalance > 0) {
+            usdsJoin.join(vow, usdsBalance);
+            emit Blow(address(usds), usdsBalance);
+        }
     }
 }
