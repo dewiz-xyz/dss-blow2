@@ -21,8 +21,8 @@ import "./DssBlow2.sol";
 contract DssBlow2Test is DssTest {
     address constant CHAINLOG = 0xdA0Ab1e0017DEbCd72Be8599041a2aa3bA7e740F;
 
-    DssInstance public dss;
-    DssBlow2 public dssBlow2;
+    DssInstance dss;
+    DssBlow2 dssBlow2;
 
     address usds;
     address usdsJoin;

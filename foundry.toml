@@ -5,7 +5,6 @@ script = 'script'
 libs = ["lib"]
 solc = '0.8.26'
 optimizer = false
-via_ir = true
 
 fs_permissions = [
     { access = "read", path = "./out/" },
