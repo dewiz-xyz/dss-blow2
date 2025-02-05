@@ -13,7 +13,7 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-pragma solidity 0.8.24;
+pragma solidity ^0.8.24;
 
 import {Script} from "forge-std/Script.sol";
 import {stdJson} from "forge-std/StdJson.sol";
@@ -42,7 +42,7 @@ contract DssBlow2DeployScript is Script {
 
         vm.stopBroadcast();
 
-        ScriptTools.exportContract(NAME, "dssBlow2Deploy", inst.blow);
+        ScriptTools.exportContract(NAME, "blow2", inst.blow);
         ScriptTools.exportContract(NAME, "daiJoin", address(dss.daiJoin));
         ScriptTools.exportContract(NAME, "usdsJoin", usdsJoin);
         ScriptTools.exportContract(NAME, "vow", address(dss.vow));
