@@ -22,7 +22,6 @@ interface ERC20Like {
 
 interface JoinLike {
     function dai() external view returns (address);
-    function usds() external view returns (address);
     function join(address, uint256) external;
 }
 
@@ -39,7 +38,7 @@ contract DssBlow2 {
         daiJoin = JoinLike(daiJoin_);
         dai = ERC20Like(daiJoin.dai());
         usdsJoin = JoinLike(usdsJoin_);
-        usds = ERC20Like(usdsJoin.usds());
+        usds = ERC20Like(usdsJoin.dai());
         vow = vow_;
         dai.approve(daiJoin_, type(uint256).max);
         usds.approve(usdsJoin_, type(uint256).max);
