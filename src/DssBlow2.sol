@@ -24,6 +24,7 @@ interface DaiJoinLike {
     function dai() external view returns (address);
     function join(address, uint256) external;
 }
+
 interface UsdsJoinLike is DaiJoinLike {
     function usds() external view returns (address);
 }
