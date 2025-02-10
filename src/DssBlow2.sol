@@ -16,7 +16,7 @@
 pragma solidity ^0.8.24;
 
 interface ERC20Like {
-    function balanceOf(address) external returns (uint256);
+    function balanceOf(address) external view returns (uint256);
     function approve(address usr, uint256 wad) external returns (bool);
 }
 
